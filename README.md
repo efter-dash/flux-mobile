@@ -4,6 +4,24 @@ FLUX is a native Android application built with **Kotlin** and **Jetpack Compose
 
 ---
 
+## 📥 Direct APK Download for Pixel 7 & Android Devices
+
+You can download and install the app on your phone directly from this repository:
+
+1. **Go to Releases**:
+   - Navigate to the **[Releases](https://github.com/efter-dash/flux-social/releases)** section of this GitHub repository (or click **Releases → latest** on the right sidebar).
+2. **Download APK**:
+   - Under **Assets**, tap **`app-debug.apk`** to download it directly to your Pixel 7.
+3. **Install on your Pixel 7**:
+   - Open your Pixel's **Files by Google** app and open **Downloads**.
+   - Tap `app-debug.apk`.
+   - If prompted with *"For your security, your phone is not allowed to install unknown apps from this source"*, tap **Settings** and toggle on **Allow from this source**.
+   - Tap **Install**, then **Open**.
+
+> 💡 **Automated Builds**: A GitHub Actions workflow (`.github/workflows/build-apk.yml`) is included in this repository. Whenever code is pushed to `main`, GitHub Actions automatically compiles the Android app and publishes an updated `app-debug.apk` under the **Releases** tab.
+
+---
+
 ## 📱 Features
 
 - **Dashboard**: Monthly metrics, active production velocity, attention & blocker alerts, and stage breakdown.
@@ -30,11 +48,15 @@ FLUX is a native Android application built with **Kotlin** and **Jetpack Compose
 
 ---
 
-## 🚀 Building the App
+## 🚀 Building Locally
 
 ```bash
+# Clone the repository
+git clone https://github.com/efter-dash/flux-social.git
+cd flux-social
+
 # Build debug APK
-gradle assembleDebug
+./gradlew :app:assembleDebug
 
 # Output APK path
 app/build/outputs/apk/debug/app-debug.apk

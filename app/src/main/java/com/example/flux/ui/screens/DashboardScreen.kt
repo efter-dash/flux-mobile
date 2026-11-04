@@ -47,6 +47,7 @@ import com.example.flux.domain.OverallStatus
 import com.example.flux.ui.components.ContentItemCard
 import com.example.flux.ui.components.FluxStarIcon
 import com.example.flux.ui.components.MetricCard
+import com.example.flux.ui.theme.BaseCanvas
 import com.example.flux.ui.theme.FluxAccent
 import com.example.flux.ui.theme.FluxAmber
 import com.example.flux.ui.theme.FluxDanger
