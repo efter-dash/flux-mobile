@@ -120,7 +120,7 @@ fun TasksScreen(modifier: Modifier = Modifier) {
                         .padding(32.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("No tasks found", color = InkDim)
+                    Text("No tasks found", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             } else {
                 LazyColumn(
@@ -139,9 +139,9 @@ fun TasksScreen(modifier: Modifier = Modifier) {
                                 .fillMaxWidth()
                                 .testTag("task_item_${task.code}"),
                             shape = RoundedCornerShape(8.dp),
-                            colors = CardDefaults.cardColors(containerColor = PanelCard),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             border = CardDefaults.outlinedCardBorder().copy(
-                                brush = androidx.compose.ui.graphics.SolidColor(LineBorder.copy(alpha = 0.5f))
+                                brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
                             )
                         ) {
                             Row(
@@ -204,7 +204,7 @@ fun TasksScreen(modifier: Modifier = Modifier) {
                                         style = MaterialTheme.typography.bodyMedium.copy(
                                             textDecoration = if (isComplete) TextDecoration.LineThrough else TextDecoration.None
                                         ),
-                                        color = if (isComplete) InkFaint else InkLight,
+                                        color = if (isComplete) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurface,
                                         fontWeight = FontWeight.Medium
                                     )
 
@@ -217,13 +217,13 @@ fun TasksScreen(modifier: Modifier = Modifier) {
                                         Text(
                                             text = member?.name ?: "Unassigned",
                                             style = MaterialTheme.typography.labelSmall,
-                                            color = InkDim
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         if (task.deadline.isNotBlank()) {
                                             Text(
                                                 text = "Due: ${task.deadline}",
                                                 style = MaterialTheme.typography.labelSmall,
-                                                color = InkFaint
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                                             )
                                         }
                                     }
@@ -241,8 +241,8 @@ fun TasksScreen(modifier: Modifier = Modifier) {
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
                 .testTag("add_task_fab"),
-            containerColor = FluxAccent,
-            contentColor = BaseCanvas
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "Add Task")
         }
@@ -254,7 +254,7 @@ fun TasksScreen(modifier: Modifier = Modifier) {
 
             AlertDialog(
                 onDismissRequest = { showAddTaskDialog = false },
-                title = { Text("New Action Item", color = InkLight) },
+                title = { Text("New Action Item", color = MaterialTheme.colorScheme.onSurface) },
                 text = {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         OutlinedTextField(
@@ -265,8 +265,8 @@ fun TasksScreen(modifier: Modifier = Modifier) {
                                 .fillMaxWidth()
                                 .testTag("task_title_input"),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = InkLight,
-                                unfocusedTextColor = InkLight
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                             )
                         )
                         OutlinedTextField(
@@ -275,8 +275,8 @@ fun TasksScreen(modifier: Modifier = Modifier) {
                             label = { Text("Deadline (YYYY-MM-DD)") },
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = InkLight,
-                                unfocusedTextColor = InkLight
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                             )
                         )
                     }
@@ -295,15 +295,15 @@ fun TasksScreen(modifier: Modifier = Modifier) {
                                 showAddTaskDialog = false
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = FluxAccent)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
-                        Text("Add Task", color = BaseCanvas)
+                        Text("Add Task", color = MaterialTheme.colorScheme.onPrimary)
                     }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showAddTaskDialog = false }) { Text("Cancel", color = InkDim) }
+                    TextButton(onClick = { showAddTaskDialog = false }) { Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 },
-                containerColor = PanelCard
+                containerColor = MaterialTheme.colorScheme.surface
             )
         }
     }

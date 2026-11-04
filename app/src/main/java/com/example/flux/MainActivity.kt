@@ -86,6 +86,13 @@ import com.example.flux.ui.theme.PanelCard
 import com.example.flux.ui.theme.RaisedCard
 import kotlinx.coroutines.launch
 
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material3.IconButton
+import com.example.flux.ui.screens.WorkspacePickerScreen
+import com.example.flux.ui.theme.AppThemeMode
+
 enum class AppDestination(val label: String, val icon: ImageVector) {
     DASHBOARD("Dashboard", Icons.Default.Dashboard),
     PIPELINE("Pipeline", Icons.Default.ViewKanban),
@@ -104,7 +111,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FluxTheme {
+            val themeMode by FluxRepository.instance.themeMode.collectAsState()
+            FluxTheme(themeMode = themeMode) {
                 FluxAppMain()
             }
         }
@@ -114,7 +122,19 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FluxAppMain() {
+    val activeWorkspaceId by FluxRepository.instance.activeWorkspaceId.collectAsState()
     val workspaceData by FluxRepository.instance.workspaceData.collectAsState()
+    val themeMode by FluxRepository.instance.themeMode.collectAsState()
+
+    // Prompt user to pick or create a workspace on app open if none is selected
+    if (activeWorkspaceId == null) {
+        WorkspacePickerScreen(
+            onWorkspaceSelected = { id ->
+                FluxRepository.instance.selectWorkspace(id)
+            }
+        )
+        return
+    }
 
     var currentDestination by remember { mutableStateOf(AppDestination.DASHBOARD) }
     var viewingContentId by remember { mutableStateOf<String?>(null) }
@@ -123,6 +143,10 @@ fun FluxAppMain() {
 
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
+
+    BackHandler(enabled = currentDestination != AppDestination.DASHBOARD && viewingContentId == null) {
+        currentDestination = AppDestination.DASHBOARD
+    }
 
     if (viewingContentId != null) {
         ContentDetailScreen(
@@ -136,40 +160,86 @@ fun FluxAppMain() {
                     title = {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(end = 4.dp)
                         ) {
-                            FluxStarIcon(modifier = Modifier.size(24.dp), tint = FluxAccent)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "FLUX",
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Bold,
-                                color = InkLight,
-                                letterSpacing = 1.sp
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .background(RaisedCard)
-                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            // Logo and Title
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.weight(1f, fill = false)
                             ) {
+                                FluxStarIcon(modifier = Modifier.size(22.dp), tint = MaterialTheme.colorScheme.primary)
+                                Spacer(modifier = Modifier.width(6.dp))
                                 Text(
-                                    text = workspaceData.workspace.initials,
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = FluxPrimary,
-                                    fontSize = 10.sp
+                                    text = "FLUX",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    letterSpacing = 1.sp
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
+                                // Active Workspace Switcher Pill
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                                        .clickable { FluxRepository.instance.clearActiveWorkspace() }
+                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                        .testTag("top_bar_switch_workspace")
+                                ) {
+                                    Text(
+                                        text = workspaceData.workspace.initials,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontSize = 11.sp
+                                    )
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text(
+                                        text = workspaceData.workspace.name,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        maxLines = 1
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Icon(
+                                        imageVector = Icons.Default.SwapHoriz,
+                                        contentDescription = "Switch Workspace",
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                }
+                            }
+
+                            // Theme Toggle Button
+                            IconButton(
+                                onClick = { FluxRepository.instance.toggleTheme() },
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .testTag("top_bar_theme_toggle")
+                            ) {
+                                Icon(
+                                    imageVector = if (themeMode == AppThemeMode.LIGHT) Icons.Default.DarkMode else Icons.Default.LightMode,
+                                    contentDescription = "Toggle Theme",
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
                         }
                     },
-                    colors = TopAppBarDefaults.topAppBarColors(containerColor = PanelCard)
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface
+                    )
                 )
             },
             bottomBar = {
                 NavigationBar(
-                    containerColor = PanelCard,
-                    contentColor = FluxAccent
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.primary
                 ) {
                     val mainTabs = listOf(
                         AppDestination.DASHBOARD,
@@ -190,11 +260,11 @@ fun FluxAppMain() {
                             },
                             label = { Text(destination.label, fontSize = 11.sp) },
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = BaseCanvas,
-                                selectedTextColor = FluxPrimary,
-                                indicatorColor = FluxAccent,
-                                unselectedIconColor = InkDim,
-                                unselectedTextColor = InkDim
+                                selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                indicatorColor = MaterialTheme.colorScheme.primary,
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
                             ),
                             modifier = Modifier.testTag("nav_tab_${destination.name.lowercase()}")
                         )
@@ -213,17 +283,17 @@ fun FluxAppMain() {
                         },
                         label = { Text("More", fontSize = 11.sp) },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = BaseCanvas,
-                            selectedTextColor = FluxPrimary,
-                            indicatorColor = FluxAccent,
-                            unselectedIconColor = InkDim,
-                            unselectedTextColor = InkDim
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            indicatorColor = MaterialTheme.colorScheme.primary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
                         ),
                         modifier = Modifier.testTag("nav_tab_more")
                     )
                 }
             },
-            containerColor = BaseCanvas
+            containerColor = MaterialTheme.colorScheme.background
         ) { paddingValues ->
             Box(
                 modifier = Modifier
@@ -260,7 +330,9 @@ fun FluxAppMain() {
                         onNavigateToContentDetail = { viewingContentId = it }
                     )
                     AppDestination.TEAM -> TeamScreen()
-                    AppDestination.SETTINGS -> SettingsScreen()
+                    AppDestination.SETTINGS -> SettingsScreen(
+                        onSwitchWorkspace = { FluxRepository.instance.clearActiveWorkspace() }
+                    )
                 }
             }
 
@@ -268,7 +340,7 @@ fun FluxAppMain() {
                 ModalBottomSheet(
                     onDismissRequest = { showMoreSheet = false },
                     sheetState = sheetState,
-                    containerColor = PanelCard
+                    containerColor = MaterialTheme.colorScheme.surface
                 ) {
                     Column(
                         modifier = Modifier
@@ -279,8 +351,9 @@ fun FluxAppMain() {
                         Text(
                             text = "WORKSPACES & TOOLS",
                             style = MaterialTheme.typography.labelSmall,
-                            color = InkFaint,
-                            letterSpacing = 1.sp
+                            color = MaterialTheme.colorScheme.primary,
+                            letterSpacing = 1.sp,
+                            fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(14.dp))
 
@@ -311,13 +384,13 @@ fun FluxAppMain() {
                                     imageVector = dest.icon,
                                     contentDescription = dest.label,
                                     modifier = Modifier.size(20.dp),
-                                    tint = if (currentDestination == dest) FluxAccent else InkLight
+                                    tint = if (currentDestination == dest) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(
                                     text = dest.label,
                                     style = MaterialTheme.typography.titleMedium,
-                                    color = if (currentDestination == dest) FluxPrimary else InkLight,
+                                    color = if (currentDestination == dest) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
                                     fontWeight = if (currentDestination == dest) FontWeight.Bold else FontWeight.Normal
                                 )
                             }

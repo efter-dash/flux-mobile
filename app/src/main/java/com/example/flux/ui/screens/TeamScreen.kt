@@ -93,7 +93,7 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                         Text(
                             text = "Production Staff (${members.size})",
                             style = MaterialTheme.typography.headlineMedium,
-                            color = InkLight
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
                 }
@@ -109,9 +109,9 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                         .fillMaxWidth()
                         .testTag("member_card_${member.id}"),
                     shape = RoundedCornerShape(10.dp),
-                    colors = CardDefaults.cardColors(containerColor = PanelCard),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     border = CardDefaults.outlinedCardBorder().copy(
-                        brush = androidx.compose.ui.graphics.SolidColor(LineBorder.copy(alpha = 0.5f))
+                        brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
                     )
                 ) {
                     Row(
@@ -124,14 +124,14 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                             modifier = Modifier
                                 .size(44.dp)
                                 .clip(CircleShape)
-                                .background(RaisedCard),
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
                             contentAlignment = Alignment.Center
                         ) {
                             val initials = member.name.split(" ").mapNotNull { it.firstOrNull() }.take(2).joinToString("")
                             Text(
                                 text = initials,
                                 style = MaterialTheme.typography.titleMedium,
-                                color = FluxPrimary,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -147,18 +147,18 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                                 Text(
                                     text = member.name,
                                     style = MaterialTheme.typography.titleMedium,
-                                    color = InkLight
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(4.dp))
-                                        .background(FluxAccent.copy(alpha = 0.15f))
+                                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f))
                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                 ) {
                                     Text(
                                         text = member.access,
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = FluxAccent,
+                                        color = MaterialTheme.colorScheme.primary,
                                         fontSize = 9.sp
                                     )
                                 }
@@ -167,7 +167,7 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                             Text(
                                 text = member.role,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = FluxSecondary,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Medium
                             )
 
@@ -176,7 +176,7 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                                 Text(
                                     text = member.responsibility,
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = InkDim
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
 
@@ -186,12 +186,12 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                                 Text(
                                     text = "$ownedContent pieces owned",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = InkFaint
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                                 )
                                 Text(
                                     text = "$assignedTasks active tasks",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = InkFaint
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                                 )
                             }
                         }
@@ -206,8 +206,8 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
                 .testTag("add_member_fab"),
-            containerColor = FluxAccent,
-            contentColor = BaseCanvas
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "Add Member")
         }
@@ -220,7 +220,7 @@ fun TeamScreen(modifier: Modifier = Modifier) {
 
             AlertDialog(
                 onDismissRequest = { showAddMemberDialog = false },
-                title = { Text("Invite Team Member", color = InkLight) },
+                title = { Text("Invite Team Member", color = MaterialTheme.colorScheme.onSurface) },
                 text = {
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         OutlinedTextField(
@@ -231,8 +231,8 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                                 .fillMaxWidth()
                                 .testTag("member_name_input"),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = InkLight,
-                                unfocusedTextColor = InkLight
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                             )
                         )
                         OutlinedTextField(
@@ -241,8 +241,8 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                             label = { Text("Email Address") },
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = InkLight,
-                                unfocusedTextColor = InkLight
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                             )
                         )
                         OutlinedTextField(
@@ -251,8 +251,8 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                             label = { Text("Role") },
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = InkLight,
-                                unfocusedTextColor = InkLight
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                             )
                         )
                         OutlinedTextField(
@@ -261,8 +261,8 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                             label = { Text("Primary Responsibility") },
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = InkLight,
-                                unfocusedTextColor = InkLight
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                             )
                         )
                     }
@@ -280,15 +280,15 @@ fun TeamScreen(modifier: Modifier = Modifier) {
                                 showAddMemberDialog = false
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = FluxAccent)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
-                        Text("Add Member", color = BaseCanvas)
+                        Text("Add Member", color = MaterialTheme.colorScheme.onPrimary)
                     }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showAddMemberDialog = false }) { Text("Cancel", color = InkDim) }
+                    TextButton(onClick = { showAddMemberDialog = false }) { Text("Cancel", color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 },
-                containerColor = PanelCard
+                containerColor = MaterialTheme.colorScheme.surface
             )
         }
     }

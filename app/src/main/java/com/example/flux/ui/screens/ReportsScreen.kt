@@ -86,14 +86,16 @@ fun ReportsScreen(
             Text(
                 text = "PERFORMANCE ANALYTICS",
                 style = MaterialTheme.typography.labelSmall,
-                color = FluxPrimary,
-                letterSpacing = 1.2.sp
+                color = MaterialTheme.colorScheme.primary,
+                letterSpacing = 1.2.sp,
+                fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
                 text = "Campaign & Post Intelligence",
                 style = MaterialTheme.typography.headlineMedium,
-                color = InkLight
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
@@ -108,7 +110,7 @@ fun ReportsScreen(
                     value = String.format("%,d", totalViews),
                     subtext = "${publishedItems.size} posts tracked",
                     icon = Icons.Default.Visibility,
-                    accentColor = FluxAccent,
+                    accentColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f)
                 )
                 MetricCard(
@@ -131,14 +133,14 @@ fun ReportsScreen(
                     title = "Total Reach",
                     value = String.format("%,d", totalReach),
                     subtext = "Unique impressions",
-                    accentColor = FluxSecondary,
+                    accentColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f)
                 )
                 MetricCard(
                     title = "Total Saves",
                     value = String.format("%,d", totalSaves),
                     subtext = "High-intent bookmarks",
-                    accentColor = FluxPrimary,
+                    accentColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -150,7 +152,7 @@ fun ReportsScreen(
             Text(
                 text = "TOP PERFORMING CONTENT",
                 style = MaterialTheme.typography.labelSmall,
-                color = InkFaint,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 letterSpacing = 0.8.sp
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -161,13 +163,13 @@ fun ReportsScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
-                    colors = CardDefaults.cardColors(containerColor = PanelCard)
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
                     Box(modifier = Modifier.padding(20.dp)) {
                         Text(
                             text = "No published items with logged metrics yet.",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = InkDim
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -182,9 +184,9 @@ fun ReportsScreen(
                         .fillMaxWidth()
                         .clickable { onNavigateToContentDetail(item.id) },
                     shape = RoundedCornerShape(10.dp),
-                    colors = CardDefaults.cardColors(containerColor = PanelCard),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     border = CardDefaults.outlinedCardBorder().copy(
-                        brush = androidx.compose.ui.graphics.SolidColor(LineBorder.copy(alpha = 0.5f))
+                        brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
                     )
                 ) {
                     Column(modifier = Modifier.padding(14.dp)) {
@@ -194,7 +196,7 @@ fun ReportsScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(item.code, style = MaterialTheme.typography.labelSmall, color = FluxPrimary)
+                                Text(item.code, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 PlatformBadge(platform = item.platform)
                             }
@@ -211,7 +213,7 @@ fun ReportsScreen(
                         }
 
                         Spacer(modifier = Modifier.height(6.dp))
-                        Text(item.title, style = MaterialTheme.typography.titleMedium, color = InkLight)
+                        Text(item.title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                         Spacer(modifier = Modifier.height(10.dp))
 
                         Row(
@@ -219,32 +221,32 @@ fun ReportsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Column {
-                                Text("VIEWS", style = MaterialTheme.typography.labelSmall, color = InkFaint)
+                                Text("VIEWS", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Text(
                                     text = String.format("%,d", p?.views ?: 0L),
                                     style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-                                    color = InkLight,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
                             Column {
-                                Text("LIKES", style = MaterialTheme.typography.labelSmall, color = InkFaint)
+                                Text("LIKES", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Text(
                                     text = String.format("%,d", p?.likes ?: 0L),
                                     style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-                                    color = InkLight
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                             Column {
-                                Text("SAVES", style = MaterialTheme.typography.labelSmall, color = InkFaint)
+                                Text("SAVES", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Text(
                                     text = String.format("%,d", p?.saves ?: 0L),
                                     style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
-                                    color = FluxPrimary
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                             }
                             Column {
-                                Text("ENG. RATE", style = MaterialTheme.typography.labelSmall, color = InkFaint)
+                                Text("ENG. RATE", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Text(
                                     text = String.format("%.1f%%", engRate),
                                     style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Monospace),
@@ -259,7 +261,7 @@ fun ReportsScreen(
                             Text(
                                 text = "Learning: ${p?.keyLearning}",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = InkDim
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }

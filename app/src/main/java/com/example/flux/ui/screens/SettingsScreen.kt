@@ -14,16 +14,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BrightnessAuto
+import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -44,21 +50,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flux.data.repository.FluxRepository
-import com.example.flux.ui.theme.BaseCanvas
-import com.example.flux.ui.theme.FluxAccent
+import com.example.flux.ui.theme.AppThemeMode
 import com.example.flux.ui.theme.FluxDanger
-import com.example.flux.ui.theme.FluxEmerald
-import com.example.flux.ui.theme.FluxPrimary
-import com.example.flux.ui.theme.InkDim
-import com.example.flux.ui.theme.InkFaint
-import com.example.flux.ui.theme.InkLight
-import com.example.flux.ui.theme.LineBorder
-import com.example.flux.ui.theme.PanelCard
-import com.example.flux.ui.theme.RaisedCard
 
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier) {
+fun SettingsScreen(
+    onSwitchWorkspace: () -> Unit = {},
+    modifier: Modifier = Modifier
+) {
     val workspaceData by FluxRepository.instance.workspaceData.collectAsState()
+    val themeMode by FluxRepository.instance.themeMode.collectAsState()
     val ws = workspaceData.workspace
 
     var wsName by remember(ws.name) { mutableStateOf(ws.name) }
@@ -70,6 +71,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
             .testTag("settings_screen"),
         contentPadding = PaddingValues(top = 16.dp, bottom = 88.dp),
@@ -77,34 +79,143 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     ) {
         item {
             Text(
-                text = "WORKSPACE SETTINGS",
+                text = "SETTINGS & PREFERENCES",
                 style = MaterialTheme.typography.labelSmall,
-                color = FluxPrimary,
-                letterSpacing = 1.2.sp
+                color = MaterialTheme.colorScheme.primary,
+                letterSpacing = 1.2.sp,
+                fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "Configuration & Identifiers",
+                text = "Workspace & App Settings",
                 style = MaterialTheme.typography.headlineMedium,
-                color = InkLight
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
+        }
+
+        // Appearance Theme Settings Card
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                border = CardDefaults.outlinedCardBorder().copy(
+                    brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
+                )
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "THEME & APPEARANCE",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Choose your preferred display theme",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        AppThemeMode.entries.forEach { mode ->
+                            val isSelected = themeMode == mode
+                            FilterChip(
+                                selected = isSelected,
+                                onClick = { FluxRepository.instance.setThemeMode(mode) },
+                                label = { Text(mode.label) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = when (mode) {
+                                            AppThemeMode.LIGHT -> Icons.Default.LightMode
+                                            AppThemeMode.DARK -> Icons.Default.DarkMode
+                                            AppThemeMode.SYSTEM -> Icons.Default.BrightnessAuto
+                                        },
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .testTag("theme_chip_${mode.name.lowercase()}"),
+                                colors = FilterChipDefaults.filterChipColors(
+                                    selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.18f),
+                                    selectedLabelColor = MaterialTheme.colorScheme.primary,
+                                    selectedLeadingIconColor = MaterialTheme.colorScheme.primary
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        // Active Workspace & Switcher Card
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                border = CardDefaults.outlinedCardBorder().copy(
+                    brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
+                )
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "ACTIVE WORKSPACE",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = ws.name,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+
+                        OutlinedButton(
+                            onClick = onSwitchWorkspace,
+                            modifier = Modifier.testTag("switch_workspace_button")
+                        ) {
+                            Icon(imageVector = Icons.Default.Business, contentDescription = null, modifier = Modifier.size(16.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text("Switch Workspace")
+                        }
+                    }
+                }
+            }
         }
 
         // Workspace General Details
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(10.dp),
-                colors = CardDefaults.cardColors(containerColor = PanelCard),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 border = CardDefaults.outlinedCardBorder().copy(
-                    brush = androidx.compose.ui.graphics.SolidColor(LineBorder.copy(alpha = 0.5f))
+                    brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
                 )
             ) {
-                Column(modifier = Modifier.padding(14.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "GENERAL SETTINGS",
+                        text = "WORKSPACE IDENTIFIERS & PREFIXES",
                         style = MaterialTheme.typography.labelSmall,
-                        color = InkFaint
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.height(10.dp))
 
@@ -116,8 +227,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                             .fillMaxWidth()
                             .testTag("settings_ws_name_input"),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = InkLight,
-                            unfocusedTextColor = InkLight
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         )
                     )
 
@@ -130,8 +241,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                             label = { Text("Content Prefix") },
                             modifier = Modifier.weight(1f),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = InkLight,
-                                unfocusedTextColor = InkLight
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                             )
                         )
                         OutlinedTextField(
@@ -140,8 +251,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                             label = { Text("Task Prefix") },
                             modifier = Modifier.weight(1f),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = InkLight,
-                                unfocusedTextColor = InkLight
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                             )
                         )
                         OutlinedTextField(
@@ -150,8 +261,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                             label = { Text("Idea Prefix") },
                             modifier = Modifier.weight(1f),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = InkLight,
-                                unfocusedTextColor = InkLight
+                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                             )
                         )
                     }
@@ -163,15 +274,17 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                             FluxRepository.instance.updateWorkspace(wsName, contentPrefix, taskPrefix, ideaPrefix)
                             savedSuccess = true
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = FluxAccent),
-                        modifier = Modifier.align(Alignment.End).testTag("settings_save_button")
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .testTag("settings_save_button")
                     ) {
                         if (savedSuccess) {
-                            Icon(imageVector = Icons.Default.Check, contentDescription = null, modifier = Modifier.size(16.dp), tint = BaseCanvas)
+                            Icon(imageVector = Icons.Default.Check, contentDescription = null, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("Saved", color = BaseCanvas)
+                            Text("Saved")
                         } else {
-                            Text("Save Changes", color = BaseCanvas)
+                            Text("Save Changes")
                         }
                     }
                 }
@@ -182,17 +295,18 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(10.dp),
-                colors = CardDefaults.cardColors(containerColor = PanelCard),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 border = CardDefaults.outlinedCardBorder().copy(
-                    brush = androidx.compose.ui.graphics.SolidColor(LineBorder.copy(alpha = 0.5f))
+                    brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
                 )
             ) {
-                Column(modifier = Modifier.padding(14.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "ACTIVE PRODUCTION PIPELINE STAGES",
                         style = MaterialTheme.typography.labelSmall,
-                        color = InkFaint
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.SemiBold
                     )
                     Spacer(modifier = Modifier.height(10.dp))
 
@@ -201,9 +315,9 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(RaisedCard)
-                                .padding(horizontal = 12.dp, vertical = 8.dp),
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                                .padding(horizontal = 12.dp, vertical = 10.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -211,21 +325,21 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                                 Text(
                                     text = "${idx + 1}.",
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = FluxPrimary,
+                                    color = MaterialTheme.colorScheme.primary,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
                                     text = stage.name,
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = InkLight,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     fontWeight = FontWeight.Medium
                                 )
                             }
                             Text(
                                 text = stage.ownerRole,
                                 style = MaterialTheme.typography.labelSmall,
-                                color = InkDim
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -237,23 +351,24 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(10.dp),
-                colors = CardDefaults.cardColors(containerColor = PanelCard),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 border = CardDefaults.outlinedCardBorder().copy(
-                    brush = androidx.compose.ui.graphics.SolidColor(LineBorder.copy(alpha = 0.5f))
+                    brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
                 )
             ) {
-                Column(modifier = Modifier.padding(14.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "DATA RESET",
+                        text = "DEMO DATA RESET",
                         style = MaterialTheme.typography.labelSmall,
-                        color = FluxDanger
+                        color = FluxDanger,
+                        fontWeight = FontWeight.Bold
                     )
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Reset all content, tasks, ideas and metrics back to the initial production dataset.",
+                        text = "Reset all content, tasks, ideas and metrics back to the initial sample data.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = InkDim
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -264,7 +379,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     ) {
                         Icon(imageVector = Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text("Reset to Demo State")
+                        Text("Reset Demo State")
                     }
                 }
             }

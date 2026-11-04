@@ -57,14 +57,21 @@ jobs:
       - name: Publish to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.0.0
-          name: "FLUX Mobile v1.0.0"
+          tag_name: v1.1.0
+          name: "FLUX Mobile v1.1.0"
+          make_latest: true
           body: |
-            ## 📱 FLUX Mobile for Android (Pixel 7 / Android 8.0+)
+            ## 📱 FLUX Mobile v1.1.0 for Android (Pixel 7 / Android 8.0+)
             
-            **Download:** Tap **`flux-mobile.apk`** below to download and install directly on your Pixel 7.
+            **Direct Download:** Tap **`flux-mobile.apk`** below under **Assets** to download and install directly on your phone.
             
-            ### How to install on your Google Pixel 7:
+            ### ✨ What's New in v1.1.0:
+            - 🌓 **Light Mode & Dark Mode**: Seamlessly switch between Light, Dark, or System Default themes anytime in Settings or with the quick toggle in the top bar.
+            - 🚀 **First-Launch Onboarding**: New users are greeted with a prompt to set up their team workspace.
+            - 🏢 **Multi-Workspace Selector**: Choose which workspace to enter on app launch and switch between workspaces anytime from the top bar.
+            - 🎨 **Cleaner, More Readable UI**: Removed the oversized header from the Dashboard and optimized spacing, card contrast, and typography throughout the entire app.
+            
+            ### 📲 How to install on your Google Pixel 7:
             1. Tap **`flux-mobile.apk`** below to download.
             2. Open the **Files by Google** app and navigate to **Downloads**.
             3. Tap **`flux-mobile.apk`**. If prompted, tap **Settings** and toggle **Allow from this source**.

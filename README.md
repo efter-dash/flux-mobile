@@ -9,7 +9,7 @@ FLUX is a native Android application built with **Kotlin** and **Jetpack Compose
 You can download and install the app on your phone directly from this repository:
 
 1. **Go to Releases**:
-   - Navigate to the **[Releases](https://github.com/efter-dash/flux-mobile/releases)** section of this GitHub repository (or click **Releases** on the right sidebar).
+   - Navigate to the **[Latest Release (v1.1.0)](https://github.com/efter-dash/flux-mobile/releases/latest)** section of this GitHub repository.
 2. **Download APK**:
    - Under **Assets**, tap **`flux-mobile.apk`** to download it directly to your Pixel 7.
 3. **Install on your Pixel 7**:
@@ -24,7 +24,9 @@ You can download and install the app on your phone directly from this repository
 
 ## 📱 Features
 
-- **Dashboard**: Monthly metrics, active production velocity, attention & blocker alerts, and stage breakdown.
+- **🌓 Dynamic Theming**: Toggle between **Light Mode**, **Dark Mode**, and **System Default** in Settings or with the instant 1-tap toggle in the top bar.
+- **🏢 Multi-Workspace System**: Onboarding prompt on first launch to create your initial workspace; prompt to choose a workspace upon opening if multiple exist, plus quick in-app workspace switching.
+- **Dashboard**: Refined, distraction-free production overview with stage counts, velocity metrics, attention & blocker alerts.
 - **Pipeline Kanban**: Stage-by-stage board tracking Script & Brief, Production & Shoot, Editing & Design, Review & Signoff, and Publish & Promote.
 - **Content Plan**: Filter by platform (Instagram, YouTube, TikTok, LinkedIn, X, Threads) and format (Video, Static Design, Written Content, Strategic Brief).
 - **Content Inspector & Editor**: Comprehensive item management with stage checklists, state dropdowns, creative captions, hashtags, and performance metrics.
@@ -33,7 +35,7 @@ You can download and install the app on your phone directly from this repository
 - **Idea Backlog**: Concept bank with 1-click promotion into the active content pipeline.
 - **Publishing & Analytics**: Live post management and performance metrics (views, reach, likes, saves, engagement rate).
 - **Team Directory**: Team members, roles, responsibilities, and active workload tracking.
-- **Workspace Settings**: Custom content/task/idea prefixes and pipeline configuration.
+- **Workspace Settings**: Custom content/task/idea prefixes, theme controls, and workspace management.
 
 ---
 

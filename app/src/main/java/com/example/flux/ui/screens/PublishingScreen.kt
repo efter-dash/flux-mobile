@@ -90,13 +90,13 @@ fun PublishingScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
-                    colors = CardDefaults.cardColors(containerColor = PanelCard)
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
                     Box(modifier = Modifier.padding(20.dp)) {
                         Text(
                             text = "No items currently pending final publication signoff.",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = InkDim
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -106,7 +106,7 @@ fun PublishingScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(10.dp),
-                    colors = CardDefaults.cardColors(containerColor = PanelCard),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                     border = CardDefaults.outlinedCardBorder().copy(
                         brush = androidx.compose.ui.graphics.SolidColor(FluxEmerald.copy(alpha = 0.4f))
                     )
@@ -118,7 +118,7 @@ fun PublishingScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(item.code, style = MaterialTheme.typography.labelSmall, color = FluxPrimary)
+                                Text(item.code, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                                 Spacer(modifier = Modifier.width(8.dp))
                                 PlatformBadge(platform = item.platform)
                             }
@@ -133,7 +133,7 @@ fun PublishingScreen(
                         }
 
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(item.title, style = MaterialTheme.typography.titleMedium, color = InkLight)
+                        Text(item.title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Button(
@@ -141,9 +141,9 @@ fun PublishingScreen(
                             modifier = Modifier.fillMaxWidth().height(36.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = FluxEmerald)
                         ) {
-                            Icon(imageVector = Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(16.dp), tint = BaseCanvas)
+                            Icon(imageVector = Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.surface)
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text("Launch / Mark Published", color = BaseCanvas, fontWeight = FontWeight.Bold)
+                            Text("Launch / Mark Published", color = MaterialTheme.colorScheme.surface, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
@@ -156,7 +156,7 @@ fun PublishingScreen(
             Text(
                 text = "LIVE PUBLISHED ARCHIVE (${recentlyPublished.size})",
                 style = MaterialTheme.typography.labelSmall,
-                color = InkFaint,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 letterSpacing = 0.8.sp
             )
             Spacer(modifier = Modifier.height(4.dp))
@@ -166,9 +166,9 @@ fun PublishingScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
-                colors = CardDefaults.cardColors(containerColor = PanelCard),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 border = CardDefaults.outlinedCardBorder().copy(
-                    brush = androidx.compose.ui.graphics.SolidColor(LineBorder.copy(alpha = 0.4f))
+                    brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outline.copy(alpha = 0.4f))
                 )
             ) {
                 Row(
@@ -180,23 +180,23 @@ fun PublishingScreen(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(item.code, style = MaterialTheme.typography.labelSmall, color = FluxPrimary)
+                            Text(item.code, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                             Spacer(modifier = Modifier.width(6.dp))
                             PlatformBadge(platform = item.platform)
                         }
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(item.title, style = MaterialTheme.typography.bodyMedium, color = InkLight, fontWeight = FontWeight.Medium)
+                        Text(item.title, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium)
                         if (item.actualPublishDate.isNotBlank()) {
-                            Text("Published ${item.actualPublishDate}", style = MaterialTheme.typography.labelSmall, color = InkFaint)
+                            Text("Published ${item.actualPublishDate}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
 
                     Button(
                         onClick = { onNavigateToContentDetail(item.id) },
                         modifier = Modifier.height(32.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = RaisedCard)
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                     ) {
-                        Text("View Metrics", style = MaterialTheme.typography.labelSmall, color = FluxPrimary)
+                        Text("View Metrics", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
                     }
                 }
             }

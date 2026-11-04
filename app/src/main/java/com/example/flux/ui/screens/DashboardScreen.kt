@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircleOutline
-import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.HourglassTop
 import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material3.Card
@@ -40,26 +39,16 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.flux.data.model.StageState
 import com.example.flux.data.repository.FluxRepository
 import com.example.flux.domain.Derive
 import com.example.flux.domain.OverallStatus
 import com.example.flux.ui.components.ContentItemCard
-import com.example.flux.ui.components.FluxStarIcon
 import com.example.flux.ui.components.MetricCard
-import com.example.flux.ui.theme.BaseCanvas
 import com.example.flux.ui.theme.FluxAccent
-import com.example.flux.ui.theme.FluxAmber
 import com.example.flux.ui.theme.FluxDanger
 import com.example.flux.ui.theme.FluxEmerald
-import com.example.flux.ui.theme.FluxPrimary
-import com.example.flux.ui.theme.FluxSecondary
-import com.example.flux.ui.theme.InkDim
-import com.example.flux.ui.theme.InkFaint
-import com.example.flux.ui.theme.InkLight
-import com.example.flux.ui.theme.LineBorder
-import com.example.flux.ui.theme.PanelCard
-import com.example.flux.ui.theme.RaisedCard
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun DashboardScreen(
@@ -86,7 +75,13 @@ fun DashboardScreen(
         s == OverallStatus.BLOCKED || s == OverallStatus.DELAYED
     }
 
-    Box(modifier = modifier.fillMaxSize()) {
+    val currentMonthLabel = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM yyyy"))
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -94,7 +89,7 @@ fun DashboardScreen(
                 .testTag("dashboard_screen"),
             contentPadding = PaddingValues(top = 16.dp, bottom = 88.dp)
         ) {
-            // Header: Workspace info & month
+            // Clean, non-repetitive Header: Cycle overview without oversized duplicate workspace title
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -102,39 +97,47 @@ fun DashboardScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            FluxStarIcon(modifier = Modifier.size(20.dp), tint = FluxAccent)
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = "FLUX COMMAND",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = FluxPrimary,
-                                letterSpacing = 1.2.sp
-                            )
-                        }
+                        Text(
+                            text = "PRODUCTION OVERVIEW",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            letterSpacing = 1.1.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = workspaceData.workspace.name,
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = InkLight
+                            text = currentMonthLabel,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
 
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(RaisedCard)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                             .padding(horizontal = 10.dp, vertical = 6.dp)
                     ) {
-                        Text(
-                            text = "Active Cycle",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = FluxEmerald
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .clip(CircleShape)
+                                    .background(FluxEmerald)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = "Active Cycle",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(16.dp))
             }
 
             // High-Level KPI Metric Cards Grid
@@ -156,7 +159,7 @@ fun DashboardScreen(
                         value = "$inProgress",
                         subtext = "$ready ready to post",
                         icon = Icons.Default.HourglassTop,
-                        accentColor = FluxAccent,
+                        accentColor = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.weight(1f)
                     )
                     MetricCard(
@@ -169,7 +172,7 @@ fun DashboardScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(18.dp))
             }
 
             // Pipeline Stage Health Breakdown
@@ -178,11 +181,13 @@ fun DashboardScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(onClick = onNavigateToPipeline),
-                    shape = RoundedCornerShape(10.dp),
-                    colors = CardDefaults.cardColors(containerColor = PanelCard),
-                    border = CardDefaults.outlinedCardBorder().copy(brush = androidx.compose.ui.graphics.SolidColor(LineBorder.copy(alpha = 0.5f)))
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                    border = CardDefaults.outlinedCardBorder().copy(
+                        brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
+                    )
                 ) {
-                    Column(modifier = Modifier.padding(14.dp)) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween,
@@ -191,18 +196,19 @@ fun DashboardScreen(
                             Text(
                                 text = "PIPELINE BREAKDOWN",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = InkFaint,
-                                letterSpacing = 0.8.sp
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                letterSpacing = 0.8.sp,
+                                fontWeight = FontWeight.SemiBold
                             )
                             Text(
                                 text = "View Pipeline →",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = FluxAccent,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(14.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -219,23 +225,26 @@ fun DashboardScreen(
                                 ) {
                                     Box(
                                         modifier = Modifier
-                                            .size(36.dp)
+                                            .size(38.dp)
                                             .clip(CircleShape)
-                                            .background(if (count > 0) FluxAccent.copy(alpha = 0.2f) else RaisedCard),
+                                            .background(
+                                                if (count > 0) MaterialTheme.colorScheme.primary.copy(alpha = 0.18f)
+                                                else MaterialTheme.colorScheme.surfaceVariant
+                                            ),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
                                             text = "$count",
                                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                            color = if (count > 0) FluxPrimary else InkFaint
+                                            color = if (count > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
                                     Spacer(modifier = Modifier.height(6.dp))
                                     Text(
                                         text = stage.name.split(" ").firstOrNull() ?: stage.name,
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = InkDim,
-                                        fontSize = 10.sp,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        fontSize = 11.sp,
                                         maxLines = 1
                                     )
                                 }
@@ -244,7 +253,7 @@ fun DashboardScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(18.dp))
             }
 
             // Attention / Blockers Section
@@ -254,7 +263,8 @@ fun DashboardScreen(
                         text = "NEEDS ATTENTION (${attentionItems.size})",
                         style = MaterialTheme.typography.labelSmall,
                         color = FluxDanger,
-                        letterSpacing = 0.8.sp
+                        letterSpacing = 0.8.sp,
+                        fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
@@ -269,7 +279,7 @@ fun DashboardScreen(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
 
@@ -283,19 +293,20 @@ fun DashboardScreen(
                     Text(
                         text = "RECENT PRODUCTION QUEUE",
                         style = MaterialTheme.typography.labelSmall,
-                        color = InkFaint,
-                        letterSpacing = 0.8.sp
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        letterSpacing = 0.8.sp,
+                        fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = "${content.size} items",
                         style = MaterialTheme.typography.labelSmall,
-                        color = InkDim
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
-            items(content.take(5)) { item ->
+            items(content.take(6)) { item ->
                 ContentItemCard(
                     item = item,
                     stages = stages,
@@ -312,8 +323,8 @@ fun DashboardScreen(
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
                 .testTag("create_content_fab"),
-            containerColor = FluxAccent,
-            contentColor = BaseCanvas
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "Add Content")
         }
