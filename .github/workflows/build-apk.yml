@@ -38,7 +38,9 @@ jobs:
           fi
 
       - name: Build Debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug --stacktrace
 
       - name: Prepare Named APK
         run: |
@@ -59,9 +61,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Delete local/remote tag if already present to ensure clean update
+          # Delete tag locally if present
           git tag -f v1.0.0 || true
-          
+
           gh release create v1.0.0 flux-mobile.apk \
             --title "FLUX Mobile v1.0.0" \
             --notes "### 📱 FLUX Mobile for Android (Pixel 7 / Android 8.0+)
@@ -73,4 +75,4 @@ jobs:
           2. Open the **Files by Google** app and navigate to **Downloads**.
           3. Tap **\`flux-mobile.apk\`**. If prompted, tap **Settings** and toggle **Allow from this source**.
           4. Tap **Install**, then **Open**!" \
-            --clobber
+            --clobber || echo "Warning: GitHub Releases requires 'Read and write permissions' in repository Settings -> Actions -> General -> Workflow permissions."

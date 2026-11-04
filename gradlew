@@ -53,11 +53,10 @@ else
     which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH."
 fi
 
-# If gradle-wrapper.jar is missing, download it or invoke gradle
 if [ ! -f "$CLASSPATH" ]; then
-    mkdir -p "$APP_HOME/gradle/wrapper"
-    echo "Downloading gradle-wrapper.jar..."
-    curl -fsSL -o "$CLASSPATH" https://raw.githubusercontent.com/gradle/gradle/v8.11.1/gradle/wrapper/gradle-wrapper.jar || true
+    echo "ERROR: gradle/wrapper/gradle-wrapper.jar not found." >&2
+    exit 1
 fi
 
 exec "$JAVACMD" -jar "$CLASSPATH" "$@"
+

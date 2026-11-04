@@ -9,7 +9,7 @@ FLUX is a native Android application built with **Kotlin** and **Jetpack Compose
 You can download and install the app on your phone directly from this repository:
 
 1. **Go to Releases**:
-   - Navigate to the **[Releases](https://github.com/efter-dash/flux-social/releases)** section of this GitHub repository (or click **Releases** on the right sidebar).
+   - Navigate to the **[Releases](https://github.com/efter-dash/flux-mobile/releases)** section of this GitHub repository (or click **Releases** on the right sidebar).
 2. **Download APK**:
    - Under **Assets**, tap **`flux-mobile.apk`** to download it directly to your Pixel 7.
 3. **Install on your Pixel 7**:
@@ -52,14 +52,14 @@ You can download and install the app on your phone directly from this repository
 
 ```bash
 # Clone the repository
-git clone https://github.com/efter-dash/flux-social.git
-cd flux-social
+git clone https://github.com/efter-dash/flux-mobile.git
+cd flux-mobile
 
 # Build debug APK
 ./gradlew :app:assembleDebug
 
 # Output APK path
-app/build/outputs/apk/debug/app-debug.apk
+app/build/outputs/apk/debug/flux-mobile.apk
 ```
 
 ---
