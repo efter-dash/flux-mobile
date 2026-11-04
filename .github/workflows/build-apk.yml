@@ -55,24 +55,23 @@ jobs:
           retention-days: 30
 
       - name: Publish to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: "FLUX Mobile v1.0.0"
+          body: |
+            ## 📱 FLUX Mobile for Android (Pixel 7 / Android 8.0+)
+            
+            **Download:** Tap **`flux-mobile.apk`** below to download and install directly on your Pixel 7.
+            
+            ### How to install on your Google Pixel 7:
+            1. Tap **`flux-mobile.apk`** below to download.
+            2. Open the **Files by Google** app and navigate to **Downloads**.
+            3. Tap **`flux-mobile.apk`**. If prompted, tap **Settings** and toggle **Allow from this source**.
+            4. Tap **Install**, then **Open**!
+          files: flux-mobile.apk
+          draft: false
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Delete tag locally if present
-          git tag -f v1.0.0 || true
 
-          gh release create v1.0.0 flux-mobile.apk \
-            --title "FLUX Mobile v1.0.0" \
-            --notes "### 📱 FLUX Mobile for Android (Pixel 7 / Android 8.0+)
-
-          **Download:** Tap **\`flux-mobile.apk\`** below to download and install directly on your Pixel 7.
-
-          #### How to install on your Google Pixel 7:
-          1. Tap **\`flux-mobile.apk\`** below to download.
-          2. Open the **Files by Google** app and navigate to **Downloads**.
-          3. Tap **\`flux-mobile.apk\`**. If prompted, tap **Settings** and toggle **Allow from this source**.
-          4. Tap **Install**, then **Open**!" \
-            --clobber || echo "Warning: GitHub Releases requires 'Read and write permissions' in repository Settings -> Actions -> General -> Workflow permissions."
