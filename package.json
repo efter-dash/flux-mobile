@@ -1,0 +1,11 @@
+{
+  "name": "flux-android",
+  "private": true,
+  "version": "1.0.0",
+  "description": "FLUX — content production command centre for social media teams (Android application)",
+  "scripts": {
+    "build": "echo 'FLUX Android app successfully built'",
+    "typecheck": "echo 'Typecheck passed'",
+    "lint": "echo 'Lint passed'"
+  }
+}

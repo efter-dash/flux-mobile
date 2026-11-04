@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="flux_bg">#0B1326</color>
+    <color name="flux_panel">#171F33</color>
+    <color name="flux_accent">#4B8EFF</color>
+    <color name="flux_ink">#DAE2FD</color>
+</resources>
